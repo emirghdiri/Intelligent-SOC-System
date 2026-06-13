@@ -281,7 +281,49 @@ sudo python3 soc-ml/detect_response.py
 # The system will now monitor alerts, send email notifications
 # and automatically blacklist malicious IPs
 ```
+### Step 8 — Attack Simulation
 
+#### Phase 1 — External Attacks (WAN)
+
+```bash
+# Nmap scan from Kali Linux (WAN) — before pfSense rules
+nmap -sS -A -T4 192.168.45.20
+
+# After applying pfSense WAN rules → all traffic blocked except OpenVPN & HTTPS
+```
+
+---
+
+#### Phase 2 — Internal Attacks (LAN)
+
+```bash
+# 8.1 — Network scan
+nmap -sS -A -T4 192.168.45.20
+
+# 8.2 — Vulnerability scan
+nmap --script=vuln 192.168.45.20
+
+# 8.3 — SMB Enumeration
+enum4linux 192.168.45.20
+
+# 8.4 — SMB Brute Force (MITRE ATT&CK T1110)
+hydra -I -l administrator -p wrongpass smb://192.168.45.20 -t 1
+
+# 8.5 — RDP Brute Force (MITRE ATT&CK T1110)
+hydra -I -l administrator -p wrongpass rdp://192.168.45.20 -t 1
+
+# 8.6 — Post-exploitation (on Windows 10 victim machine)
+# Encoded PowerShell execution (MITRE ATT&CK T1059.001)
+powershell -EncodedCommand dwBoAGBAYQBtAGkA
+
+# Create a new user (MITRE ATT&CK T1136)
+net user test1 Pass123! /add
+
+# Delete the user
+net user test1 /delete
+```
+
+> ⚠️ All attacks were performed in an **isolated lab environment** for educational purposes only.
 
 ## 📊 Detection Results
 
