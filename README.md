@@ -157,6 +157,7 @@ intelligent-soc-lab/
 
 ---
 ## 🚀 Getting Started
+The following steps cover the most important stages of the project setup. Some configuration details and intermediate steps have been omitted for clarity — refer to the full project report for a complete walkthrough.
 
 ### Prerequisites
 - VMware Workstation (or VirtualBox)
