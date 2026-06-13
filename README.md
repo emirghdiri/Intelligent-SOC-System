@@ -156,44 +156,132 @@ intelligent-soc-lab/
 ```
 
 ---
-
 ## 🚀 Getting Started
 
 ### Prerequisites
-- VMware Workstation
-- Ubuntu Server 22.04 (SOC Server)
-- Windows 10 (Victim Machine)
-- Kali Linux (Attacker Machine)
-- pfSense 2.x (Firewall)
+- VMware Workstation (or VirtualBox)
+- Ubuntu Server 22.04 — SOC Server
+- Windows 10 — Victim Machine
+- Kali Linux — Attacker Machine
+- pfSense 2.x — Firewall / Router
+- Python 3.8+
 
-### 1. Deploy Wazuh Manager (Ubuntu Server)
+---
+
+### Step 1 — Network Setup (pfSense)
+
+Deploy pfSense as the firewall/router between WAN and LAN zones:
+- **WAN interface** → external network (Internet simulation)
+- **LAN interface** → `192.168.45.0/24` (internal SOC network)
+
+Apply the following WAN firewall rules to block all unauthorized inbound traffic:
+- Allow **OpenVPN** (UDP 1194) — for secure remote access
+- Allow **HTTPS** (TCP 443) — for Wazuh dashboard access
+- Block **everything else** by default
+
+---
+
+### Step 2 — Deploy Wazuh Manager (Ubuntu Server — 192.168.45.10)
+
 ```bash
+# Download and run the Wazuh installation script
 curl -sO https://packages.wazuh.com/4.x/wazuh-install.sh
 sudo bash ./wazuh-install.sh -a
+
+# Verify Wazuh is running
+sudo systemctl status wazuh-manager
 ```
 
-### 2. Deploy Suricata NIDS
+Access the Wazuh dashboard at: `https://192.168.45.10`
+
+---
+
+### Step 3 — Deploy Suricata NIDS (Ubuntu Server)
+
 ```bash
+# Install Suricata
 sudo apt-get install suricata -y
+
+# Update Suricata rules
 sudo suricata-update
+
+# Start Suricata on the LAN interface
+sudo suricata -c /etc/suricata/suricata.yaml -i ens33
+
+# Verify Suricata is running
+sudo systemctl status suricata
 ```
 
-### 3. Install Wazuh Agent (Windows 10)
-Download and install the Wazuh agent from the Wazuh dashboard, then configure `ossec.conf` to enable Sysmon log collection.
-
-### 4. Run the ML Pipeline
-```bash
-# Collect alerts from Wazuh
-sudo python3 soc-ml/collect_data.py
-
-# Train the models
-sudo python3 soc-ml/train_model.py
-
-# Start real-time detection and automated response
-sudo python3 soc-ml/detect_response.py
+Integrate Suricata alerts into Wazuh by adding the following to `/var/ossec/etc/ossec.conf`:
+```xml
+<localfile>
+  <log_format>json</log_format>
+  <location>/var/log/suricata/eve.json</location>
+</localfile>
 ```
 
 ---
+
+### Step 4 — Install Sysmon on Windows 10 (Victim — 192.168.45.20)
+
+```powershell
+# Download Sysmon and configuration file
+Invoke-WebRequest -Uri "https://download.sysinternals.com/files/Sysmon.zip" -OutFile "Sysmon.zip"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/SwiftOnSecurity/sysmon-config/master/sysmonconfig-export.xml" -OutFile "C:\Sysmon\sysmonconfig.xml"
+
+# Install Sysmon with the configuration
+.\Sysmon64.exe -accepteula -i sysmonconfig.xml
+
+# Verify Sysmon is running
+Get-Service -Name Sysmon64
+```
+
+---
+
+### Step 5 — Install Wazuh Agent (Windows 10)
+
+Download the Wazuh Agent installer from the Wazuh dashboard, then:
+
+```powershell
+# Verify the agent is running
+Get-Service WazuhSvc
+```
+
+Edit `C:\Program Files (x86)\ossec-agent\ossec.conf` to enable Sysmon log collection:
+```xml
+<localfile>
+  <location>Microsoft-Windows-Sysmon/Operational</location>
+  <log_format>eventchannel</log_format>
+</localfile>
+```
+
+---
+
+### Step 6 — Install Python Dependencies (Ubuntu Server)
+
+```bash
+pip3 install pandas scikit-learn requests
+```
+
+---
+
+### Step 7 — Run the ML Pipeline
+
+```bash
+# Step 7.1 — Collect alerts from Wazuh API
+sudo python3 soc-ml/collect_data.py
+# Output: alerts.csv (28,000+ alerts)
+
+# Step 7.2 — Train the ML models
+sudo python3 soc-ml/train_model.py
+# Output: rf_model.pkl, iso_model.pkl, label_encoder.pkl
+
+# Step 7.3 — Start real-time detection and automated response
+sudo python3 soc-ml/detect_response.py
+# The system will now monitor alerts, send email notifications
+# and automatically blacklist malicious IPs
+```
+
 
 ## 📊 Detection Results
 
