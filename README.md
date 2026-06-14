@@ -16,19 +16,6 @@ The goal is to demonstrate that a complete and effective monitoring infrastructu
 - Respond autonomously to detected incidents
 
 ---
-## 📸 Screenshots
-
-### SOC Architecture
-![Architecture](screenshots/architecture-Soc.png)
-
-### pfSense Dashboard — WAN/LAN Interfaces
-![pfSense](screenshots/dashbord_pfsense.png)
-
-### Real-Time Attack Detection — Suricata & Wazuh
-![Detection](screenshots/suricata_wazuh_.png)
-
-### Automated Email Alert
-![Email Alert](screenshots/email.png)
 
 ## 🏗️ Architecture
 
@@ -45,6 +32,8 @@ WAN (External)                    LAN (Internal) — 192.168.45.0/24
                                  └──────────────┘                    │ ML Engine    │
                                                                      └──────────────┘
 ```
+
+![Architecture](screenshots/architecture-Soc.png)
 
 ### Network Zones
 - **WAN Zone** — Simulates the external Internet (external attacker)
@@ -113,6 +102,8 @@ Trained Models  ──►  Real-Time Detection  ──►  Automated Response
 - pfSense firewall tested before and after applying filtering rules
 - **Result:** All unauthorized traffic blocked. Only OpenVPN (UDP 1194) and HTTPS (TCP 443) allowed
 
+![pfSense](screenshots/dashbord_pfsense.png)
+
 ### Phase 2 — Internal Attacks (LAN)
 | Attack | Tool | MITRE ATT&CK |
 |---|---|---|
@@ -124,6 +115,8 @@ Trained Models  ──►  Real-Time Detection  ──►  Automated Response
 | Encoded PowerShell | PowerShell | T1059.001 |
 | User account creation | net user | T1136 |
 | Persistence actions | Windows admin commands | T1098 |
+
+![Detection](screenshots/suricata_wazuh_.png)
 
 ---
 
@@ -140,6 +133,8 @@ When a malicious activity is detected, `detect_response.py` automatically:
 3. **Adds the malicious IP** to a local blacklist (`blacklist.txt`)
 4. **Logs** the incident for audit trail
 
+![Email Alert](screenshots/email.png)
+
 ---
 
 ## 📁 Repository Structure
@@ -147,29 +142,18 @@ When a malicious activity is detected, `detect_response.py` automatically:
 ```
 intelligent-soc-lab/
 │
-├── soc-ml/
-│   ├── collect_data.py        # Collect alerts from Wazuh API
-│   ├── train_model.py         # Train Random Forest + Isolation Forest
-│   ├── detect_response.py     # Real-time detection + automated response
-│   ├── alerts.csv             # Generated dataset (28,186 alerts)
-│   ├── rf_model.pkl           # Trained Random Forest model
-│   ├── iso_model.pkl          # Trained Isolation Forest model
-│   ├── label_encoder.pkl      # Label encoder for categorical features
-│   └── blacklist.txt          # Auto-generated malicious IP blacklist
-│
-├── configs/
-│   ├── ossec.conf             # Wazuh agent configuration
-│   ├── suricata.yaml          # Suricata NIDS configuration
-│   └── sysmonconfig.xml       # Sysmon configuration
-│
-├── docs/
-│   └── architecture.png       # SOC architecture diagram
-│
+├── screenshots/               # Project screenshots
+├── collect_data.py            # Collect alerts from Wazuh API
+├── train_model.py             # Train Random Forest + Isolation Forest
+├── detect_response.py         # Real-time detection + automated response
+├── alerts_sample.csv          # Sample dataset (50 alerts)
 └── README.md
 ```
 
 ---
+
 ## 🚀 Getting Started
+
 The following steps cover the most important stages of the project setup. Some configuration details and intermediate steps have been omitted for clarity — refer to the full project report for a complete walkthrough.
 
 ### Prerequisites
@@ -283,18 +267,21 @@ pip3 install pandas scikit-learn requests
 
 ```bash
 # Step 7.1 — Collect alerts from Wazuh API
-sudo python3 soc-ml/collect_data.py
+sudo python3 collect_data.py
 # Output: alerts.csv (28,000+ alerts)
 
 # Step 7.2 — Train the ML models
-sudo python3 soc-ml/train_model.py
+sudo python3 train_model.py
 # Output: rf_model.pkl, iso_model.pkl, label_encoder.pkl
 
 # Step 7.3 — Start real-time detection and automated response
-sudo python3 soc-ml/detect_response.py
+sudo python3 detect_response.py
 # The system will now monitor alerts, send email notifications
 # and automatically blacklist malicious IPs
 ```
+
+---
+
 ### Step 8 — Attack Simulation
 
 #### Phase 1 — External Attacks (WAN)
@@ -305,8 +292,6 @@ nmap -sS -A -T4 192.168.45.20
 
 # After applying pfSense WAN rules → all traffic blocked except OpenVPN & HTTPS
 ```
-
----
 
 #### Phase 2 — Internal Attacks (LAN)
 
@@ -338,6 +323,8 @@ net user test1 /delete
 ```
 
 > ⚠️ All attacks were performed in an **isolated lab environment** for educational purposes only.
+
+---
 
 ## 📊 Detection Results
 
