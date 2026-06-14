@@ -168,6 +168,7 @@ Apply the following WAN firewall rules to block all unauthorized inbound traffic
 - Allow **OpenVPN** (UDP 1194) — for secure remote access
 - Allow **HTTPS** (TCP 443) — for Wazuh dashboard access
 - Block **everything else** by default
+  ![pfSense WAN Rules](screenshots/Pfsense.png)
 
 ---
 
