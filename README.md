@@ -16,6 +16,19 @@ The goal is to demonstrate that a complete and effective monitoring infrastructu
 - Respond autonomously to detected incidents
 
 ---
+## 📸 Screenshots
+
+### SOC Architecture
+![Architecture](screenshots/architecture-Soc.png)
+
+### pfSense Dashboard — WAN/LAN Interfaces
+![pfSense](screenshots/dashbord_pfsense.png)
+
+### Real-Time Attack Detection — Suricata & Wazuh
+![Detection](screenshots/suricata_wazuh_.png)
+
+### Automated Email Alert
+![Email Alert](screenshots/email.png)
 
 ## 🏗️ Architecture
 
