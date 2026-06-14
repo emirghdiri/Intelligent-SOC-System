@@ -33,7 +33,7 @@ WAN (External)                    LAN (Internal) — 192.168.45.0/24
                                                                      └──────────────┘
 ```
 
-![Architecture](screenshots/architecture-Soc.png)
+![Architecture](screenshots/SOC_architecture)
 
 ### Network Zones
 - **WAN Zone** — Simulates the external Internet (external attacker)
