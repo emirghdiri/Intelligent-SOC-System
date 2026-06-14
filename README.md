@@ -324,7 +324,6 @@ net user test1 /delete
 > ⚠️ All attacks were performed in an **isolated lab environment** for educational purposes only.
 
 ---
-
 ## 📊 Detection Results
 
 The system successfully detected all simulated attacks:
@@ -336,6 +335,7 @@ The system successfully detected all simulated attacks:
 - ✅ **Automated email alerts** sent upon attack detection
 - ✅ **Malicious IPs automatically blacklisted**
 
+> 📁 All detailed screenshots and results are available in the [`screenshots/`](screenshots/) folder.
 ---
 
 ## 🔮 Future Improvements
