@@ -157,18 +157,24 @@ The following steps cover the most important stages of the project setup. Some c
 - Python 3.8+
 
 ---
-
 ### Step 1 — Network Setup (pfSense)
 
 Deploy pfSense as the firewall/router between WAN and LAN zones:
 - **WAN interface** → external network (Internet simulation)
 - **LAN interface** → `192.168.45.0/24` (internal SOC network)
 
-Apply the following WAN firewall rules to block all unauthorized inbound traffic:
+**WAN Rules** — block all unauthorized inbound traffic:
 - Allow **OpenVPN** (UDP 1194) — for secure remote access
 - Allow **HTTPS** (TCP 443) — for Wazuh dashboard access
 - Block **everything else** by default
-  ![pfSense WAN Rules](screenshots/Pfsense.png)
+
+**LAN Rules** — allow internal communication between:
+- Windows 10 victim machine (`192.168.45.20`)
+- Kali Linux internal attacker (`192.168.45.50`)
+- Ubuntu SOC server (`192.168.45.10`)
+- All internal traffic is monitored by Suricata and Wazuh
+
+![pfSense WAN Rules](screenshots/Pfsense.png)
 
 ---
 
