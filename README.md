@@ -129,18 +129,6 @@ When a malicious activity is detected, `detect_response.py` automatically:
 
 ---
 
-## 📁 Repository Structure
-
-```
-intelligent-soc-lab/
-│
-├── screenshots/               # Project screenshots
-├── collect_data.py            # Collect alerts from Wazuh API
-├── train_model.py             # Train Random Forest + Isolation Forest
-├── detect_response.py         # Real-time detection + automated response
-├── alerts_sample.csv          # Sample dataset (50 alerts)
-└── README.md
-```
 
 ---
 
