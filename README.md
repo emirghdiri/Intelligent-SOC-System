@@ -16,24 +16,16 @@ The goal is to demonstrate that a complete and effective monitoring infrastructu
 - Respond autonomously to detected incidents
 
 ---
-
 ## 🏗️ Architecture
 
-The lab environment is built on **VMware Workstation** and consists of four virtual machines operating in an isolated network:
+The lab environment is built on **VMware Workstation** and consists of four virtual machines operating in an isolated network, separated by a pfSense firewall into two zones: a **WAN zone** simulating the external Internet, and a secured **LAN zone** (192.168.45.0/24) hosting the victim machine, the internal attacker, and the SOC server running Wazuh, Suricata, and the ML engine.
 
-```
-WAN (External)                    LAN (Internal) — 192.168.45.0/24
-┌──────────────┐                 ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-│  Kali Linux  │                 │  Windows 10  │  │  Kali Linux  │  │ Ubuntu Server│
-│ (External    │──── pfSense ────│  (Victim)    │  │ (Internal    │  │  (SOC)       │
-│  Attacker)   │   Firewall/     │  192.168.45.20│  │  Attacker)   │  │ 192.168.45.10│
-└──────────────┘   Router        │  Sysmon +    │  │ 192.168.45.50│  │ Wazuh Manager│
-                                 │  Wazuh Agent │  └──────────────┘  │ Suricata NIDS│
-                                 └──────────────┘                    │ ML Engine    │
-                                                                     └──────────────┘
-```
+The diagram below illustrates the complete architecture of the Intelligent SOC system, including the network topology, data flow, ML pipeline, and automated response mechanism:
 
-![Architecture](screenshots/SOC_architecture)
+![Intelligent SOC Architecture](screenshots/SOC_architecture.jpg)
+
+
+
 
 ### Network Zones
 - **WAN Zone** — Simulates the external Internet (external attacker)
