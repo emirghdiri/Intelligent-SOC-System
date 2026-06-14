@@ -102,7 +102,7 @@ Trained Models  ──►  Real-Time Detection  ──►  Automated Response
 - pfSense firewall tested before and after applying filtering rules
 - **Result:** All unauthorized traffic blocked. Only OpenVPN (UDP 1194) and HTTPS (TCP 443) allowed
 
-![pfSense](screenshots/dashbord_pfsense.png)
+
 
 ### Phase 2 — Internal Attacks (LAN)
 | Attack | Tool | MITRE ATT&CK |
