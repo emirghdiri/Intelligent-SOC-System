@@ -108,7 +108,7 @@ Trained Models  ──►  Real-Time Detection  ──►  Automated Response
 | User account creation | net user | T1136 |
 | Persistence actions | Windows admin commands | T1098 |
 
-![Detection](screenshots/suricata_wazuh_.png)
+
 
 ---
 
